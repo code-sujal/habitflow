@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HabitFlow - Track Your Progress</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Authentication Section -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-card">
+            <h1>HabitFlow</h1>
+            <div id="loginForm" class="auth-form">
+                <h2>Welcome Back</h2>
+                <input type="text" id="loginUsername" placeholder="Username" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button onclick="login()">Login</button>
+                <p>Don't have an account? <span onclick="showRegister()">Register here</span></p>
+            </div>
+            
+            <div id="registerForm" class="auth-form hidden">
+                <h2>Create Account</h2>
+                <input type="text" id="regUsername" placeholder="Username" required>
+                <input type="email" id="regEmail" placeholder="Email" required>
+                <input type="password" id="regPassword" placeholder="Password" required>
+                <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required>
+                <button onclick="register()">Register</button>
+                <p>Already have an account? <span onclick="showLogin()">Login here</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="main-app hidden">
+        <header class="header">
+            <div class="header-content">
+                <h1>HabitFlow</h1>
+                <div class="header-controls">
+                    <nav class="main-nav">
+                        <button onclick="showDashboard()" class="nav-btn active" id="dashboardBtn">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </button>
+                        <button onclick="showAccount()" class="nav-btn" id="accountBtn">
+                            <i class="fas fa-user"></i>
+                            <span>Account</span>
+                        </button>
+                    </nav>
+                    <button id="themeToggle" class="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <span id="userWelcome" class="user-welcome"></span>
+                    <button onclick="logout()" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <main id="dashboardSection" class="main-content">
+            <div class="dashboard">
+                <!-- Stats Overview -->
+                <section class="stats-section">
+                    <div class="stat-card">
+                        <h3>Today's Progress</h3>
+                        <div class="progress-circle">
+                            <span id="todayProgress">0%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Habits</h3>
+                        <span id="activeHabits" class="stat-number">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Longest Streak</h3>
+                        <span id="longestStreak" class="stat-number">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Points</h3>
+                        <div class="points-display-card">
+                            <span class="points-icon">🏆</span>
+                            <span id="totalPointsDashboard" class="stat-number">0</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Habit Tracker -->
+                <section class="habits-section">
+                    <div class="section-header">
+                        <h2>Habits</h2>
+                        <button onclick="showAddHabit()" class="add-btn">
+                            <i class="fas fa-plus"></i> Add Habit
+                        </button>
+                    </div>
+                    <div id="habitsList" class="habits-grid"></div>
+                </section>
+
+                <!-- To-Do List -->
+                <section class="todos-section">
+                    <div class="section-header">
+                        <h2>Tasks</h2>
+                        <div class="task-input">
+                            <input type="text" id="taskInput" placeholder="Add a new task...">
+                            <button onclick="addTask()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="tasksList" class="tasks-list"></div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Account Section -->
+        <main id="accountSection" class="main-content hidden">
+            <div class="account-dashboard">
+                <!-- Account Header -->
+                <section class="account-header">
+                    <div class="account-profile">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2 id="accountUsername">Username</h2>
+                            <p id="accountEmail">user@email.com</p>
+                            <div class="profile-stats">
+                                <div class="profile-stat">
+                                    <span class="stat-value" id="profileHabits">0</span>
+                                    <span class="stat-label">Habits</span>
+                                </div>
+                                <div class="profile-stat">
+                                    <span class="stat-value" id="profilePoints">0</span>
+                                    <span class="stat-label">Points</span>
+                                </div>
+                                <div class="profile-stat">
+                                    <span class="stat-value" id="profileDays">0</span>
+                                    <span class="stat-label">Days Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Achievements Section -->
+                <section class="achievements-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-trophy"></i>
+                            Achievements
+                        </h2>
+                        <div class="achievements-summary">
+                            <span id="unlockedCount">0</span>/<span id="totalAchievements">7</span> Unlocked
+                        </div>
+                    </div>
+                    <div id="achievementsList" class="achievements-grid"></div>
+                </section>
+
+                <!-- Progress Reports Section -->
+                <section class="reports-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-chart-line"></i>
+                            Progress Reports
+                        </h2>
+                        <div class="report-controls">
+                            <button onclick="showWeeklyReport()" class="report-btn active" id="weeklyBtn">
+                                <i class="fas fa-calendar-week"></i>
+                                Weekly
+                            </button>
+                            <button onclick="showMonthlyReport()" class="report-btn" id="monthlyBtn">
+                                <i class="fas fa-calendar-alt"></i>
+                                Monthly
+                            </button>
+                        </div>
+                    </div>
+                    <div id="reportsContainer" class="reports-container"></div>
+                </section>
+
+                <!-- Account Settings -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </h2>
+                    </div>
+                    <div class="settings-grid">
+                        <div class="setting-card">
+                            <div class="setting-info">
+                                <h4>Export Data</h4>
+                                <p>Download your habit data as JSON</p>
+                            </div>
+                            <button onclick="exportUserData()" class="setting-btn">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                        </div>
+                        <div class="setting-card">
+                            <div class="setting-info">
+                                <h4>Reset Progress</h4>
+                                <p>Clear all habit data and start fresh</p>
+                            </div>
+                            <button onclick="resetUserData()" class="setting-btn danger">
+                                <i class="fas fa-trash"></i>
+                                Reset
+                            </button>
+                        </div>
+                        <div class="setting-card">
+                            <div class="setting-info">
+                                <h4>Streak Freezes</h4>
+                                <p>Available: <span id="availableFreezesCount">3</span></p>
+                            </div>
+                            <div class="freeze-info-display">
+                                <i class="fas fa-snowflake"></i>
+                                <span>Refills weekly</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Habit Modal -->
+    <div id="habitModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Add New Habit</h3>
+            <input type="text" id="habitName" placeholder="Habit name">
+            <div class="habit-icons">
+                <div class="icon-grid">
+                    <span class="habit-icon" data-icon="💪">💪</span>
+                    <span class="habit-icon" data-icon="📚">📚</span>
+                    <span class="habit-icon" data-icon="🏃">🏃</span>
+                    <span class="habit-icon" data-icon="💧">💧</span>
+                    <span class="habit-icon" data-icon="🧘">🧘</span>
+                    <span class="habit-icon" data-icon="🎯">🎯</span>
+                    <span class="habit-icon" data-icon="🎵">🎵</span>
+                    <span class="habit-icon" data-icon="🍎">🍎</span>
+                    <span class="habit-icon" data-icon="💻">💻</span>
+                    <span class="habit-icon" data-icon="🌱">🌱</span>
+                    <span class="habit-icon" data-icon="🎨">🎨</span>
+                    <span class="habit-icon" data-icon="🧠">🧠</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button onclick="addHabit()">Add Habit</button>
+                <button onclick="closeHabitModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Streak Freeze Modal -->
+    <div id="streakFreezeModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Streak Freeze</h3>
+            <p>Use a streak freeze to protect your progress during breaks</p>
+            <div class="freeze-info">
+                <div class="freeze-count">
+                    <span>Available Freezes: </span>
+                    <span id="availableFreezes">3</span>
+                </div>
+                <p class="freeze-description">Streak freezes protect your habit streak for up to 3 days. You earn 1 freeze every week.</p>
+            </div>
+            <div class="modal-actions">
+                <button onclick="applyStreakFreeze()">Use Freeze</button>
+                <button onclick="closeStreakFreezeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Beautiful Footer -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div class="footer-quote">
+                <h3 class="quote-text">"Habits are like underwear - change them regularly or things get uncomfortable!"</h3>
+                <div class="footer-signature">
+                    <div class="signature-line"></div>
+                    
+                    
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h4>HabitFlow</h4>
+                    <p>Building better habits, one day at a time. Track your progress, earn achievements, and transform your life through consistent daily actions.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>Habit Tracking</li>
+                        <li>Achievement System</li>
+                        <li>Progress Reports</li>
+                        <li>Streak Freezes</li>
+                        <li>Task Management</li>
+                        <li>Data Export</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="https://github.com/code-sujal" class="social-link" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/sujal-sharma-6a832a214/" class="social-link" title="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-divider"></div>
+                <div class="footer-bottom-content">
+                    <p>&copy; 2025 HabitFlow. All rights reserved.</p>
+                    <div class="footer-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-code"></i>
+                            Made by Sujal Sharma
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating elements for visual appeal -->
+        <div class="footer-decoration">
+            <div class="floating-element element-1">🎯</div>
+            <div class="floating-element element-2">⭐</div>
+            <div class="floating-element element-3">🏆</div>
+            <div class="floating-element element-4">💪</div>
+        </div>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+</html>
